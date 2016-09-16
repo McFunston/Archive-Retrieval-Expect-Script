@@ -47,8 +47,12 @@ if {separateretrieve == "y"} {
   send "Retrieve";
   expect "";
   send "$jobnumber"
+  expect {
+    timeout {send_user "\nObject not found"; exit 1}
+    "Elapsed processing time"
+  }
 } else {
-  send ""
+  send "$retrieve $jobnumber $jobappendix"
 }
 
 send_user "\nPassword is correct\n"
