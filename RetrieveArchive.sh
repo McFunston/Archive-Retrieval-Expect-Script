@@ -4,9 +4,10 @@ set timeout 15
 set username [lindex $argv 0]
 set password [lindex $argv 1]
 set hostname [lindex $argv 2]
-set pwsuccess [lindex $argv 3] 
-set separateretrieve [lindex $argv 4]
+set pwsuccess [lindex $argv 3]; #set to password success identifier 
+set separateretrieve [lindex $argv 4]; # y means that retrieve and number are two separate sends
 set jobnumber [lindex $argv 5]
+set jobappendix [lindex $argv 6]; #if the job search needs paramaters eg -s 
 
 #findfilesuccess = ""
 
@@ -40,6 +41,14 @@ send "$password\r"
 expect {
   timeout { send_user "\nLogin failed. Password incorrect.\n"; exit 1}
   "$pwsuccess"  
+}
+
+if {separateretrieve == "y"} {
+  send "Retrieve";
+  expect "";
+  send "$jobnumber"
+} else {
+  send ""
 }
 
 send_user "\nPassword is correct\n"
