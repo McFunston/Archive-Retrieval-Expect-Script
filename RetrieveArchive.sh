@@ -43,9 +43,9 @@ expect {
   "$pwsuccess"  
 }
 
-if {separateretrieve == "y"} {
+if {"$separateretrieve" == "y"} {
   send "Retrieve";
-  expect "";
+  expect "######";
   send "$jobnumber"
   expect {
     timeout {send_user "\nObject not found"; exit 1}
