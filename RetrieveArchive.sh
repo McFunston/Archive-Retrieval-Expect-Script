@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 exp_internal 1
-set timeout 15
+set timeout 3000
 set username [lindex $argv 0]
 set password [lindex $argv 1]
 set hostname [lindex $argv 2]
@@ -44,17 +44,24 @@ expect {
 }
 
 if {"$separateretrieve" == "y"} {
-  send "Retrieve";
-  expect "######";
-  send "$jobnumber"
+  send "Retrieve\r";
+    expect {
+    timeout {send_user "\nServer not responding"; exit 1}
+    "######"
+  }
+
+  send "$jobnumber\r"
   expect {
     timeout {send_user "\nObject not found"; exit 1}
-    "Elapsed processing time"
+    "ANS1302E" {send_user "\nObject not found"; exit 1}
+    "Abort this operation" {send "A\r"}
+    "Elapsed processing time"    
   }
+
 } else {
-  send "$retrieve $jobnumber $jobappendix"
+  send "retrieve $jobnumber $jobappendix\r"
 }
 
-send_user "\nPassword is correct\n"
+send_user "\nFiles Retrieved\n"
 send "exit\r"
 close
