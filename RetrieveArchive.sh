@@ -64,7 +64,7 @@ if {"$separateretrieve" == "y"} {
     timeout {send_user "\nServer stopped responding"; exit 1}
     "sudo" {send "$password\r"; exp_continue}
     "ANS1302E" {send_user "\nObject not found"; exit 1}
-    "Cancel" {send "C\r"}
+    "Cancel" {send "C\r"; send_user "\nFile has already been retrieved"; exit 1}
   }
 }
 
