@@ -46,13 +46,13 @@ expect {
 if {"$separateretrieve" == "y"} {
   send "Retrieve\r";
     expect {
-    timeout {send_user "\nServer not responding"; exit 1}
+    timeout {send_user "\nServer stopped responding"; exit 1}
     "######"
   }
 
   send "$jobnumber\r"
   expect {
-    timeout {send_user "\nObject not found"; exit 1}
+    timeout {send_user "\nServer stopped responding"; exit 1}
     "ANS1302E" {send_user "\nObject not found"; exit 1}
     "Abort this operation" {send "A\r"}
     "Elapsed processing time"    
@@ -60,6 +60,12 @@ if {"$separateretrieve" == "y"} {
 
 } else {
   send "retrieve $jobnumber $jobappendix\r"
+  expect {
+    timeout {send_user "\nServer stopped responding"; exit 1}
+    "sudo" {send "$password\r"; exp_continue}
+    "ANS1302E" {send_user "\nObject not found"; exit 1}
+    "Cancel" {send "C\r"}
+  }
 }
 
 send_user "\nFiles Retrieved\n"
